@@ -268,3 +268,11 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/video,python,text,images
 .DS_Store
+# Entorno virtual de Python
+.venv/
+venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc

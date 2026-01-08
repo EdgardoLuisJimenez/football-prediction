@@ -1,5 +1,6 @@
 from utils import read_videos, save_video
 import cv2
+from team_assigner import TeamAssigner
 from tracker import Tracker
 
 
@@ -14,18 +15,16 @@ def main():
         video_frames, read_from_stub=True, stub_path="stubs/track_stubs.pkl"
     )
 
-    # Save cropped image of a player
-    for tracker_id, player in tracks['players'][0].items():
-        bbox = player["bbox"]
-        frame = video_frames[0]
+    # Assign Player Team
+    team_assigner = TeamAssigner()
+    team_assigner.assign_team_color(video_frames[0],tracks['players'][0])
 
-        # Crop bbox from frame
-        # Result: A smaller images containing just the player 
-        cropped_image = frame[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+    for frame_num, player_track in enumerate(tracks["players"]):
+        for player_id, track in player_track.items():
+            team = team_assigner.get_player_team(video_frames[frame_num],track["bbox"], player_id)
 
-        # Save the cropped image
-        cv2.imwrite(f"output_videos/img/cropped_img.jpg", cropped_image)
-        break
+            tracks["players"][frame_num][player_id]["team"] = team
+            tracks["players"][frame_num][player_id]["team_color"] = team_assigner.team_color[team]
 
 
     # Draw output

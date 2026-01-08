@@ -22,6 +22,9 @@ class Tracker:
             detections_batch = self.model.predict(frames[i : i + batch_size], conf=0.1)
             detections += detections_batch
 
+        # Detections objects have the following Attributes:
+        # names - dict - A dictionary mapping class indices to class names
+        # boxes - Boxes, optional - A boxes object containing the detection bounding boxes
         return detections
 
     def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
@@ -123,7 +126,7 @@ class Tracker:
 
             cv2.putText(
                 frame,
-                f"{track_id} texto",
+                f"{track_id}",
                 (int(x1_text), int(y1_rect+15)),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
@@ -159,7 +162,8 @@ class Tracker:
 
             # Draw players
             for track_id, player in player_dict.items():
-                frame = self.draw_ellipse(frame, player["bbox"], (0,0,255), track_id)
+                color = player.get("team_color", (0,0,255))
+                frame = self.draw_ellipse(frame, player["bbox"], color, track_id)
 
             # Draw referees
             for _, referee in referee_dict.items():
