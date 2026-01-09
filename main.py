@@ -6,10 +6,23 @@ from tracker import Tracker
 
 def main():
     # read videos
+    # video_frames
+    # │
+    # ├── frame 0  → NumPy array (image)
+    # ├── frame 1  → NumPy array (image)
+    # ├── frame 2  → NumPy array (image)
+    # ├── ...
     video_frames = read_videos("input_videos/08fd33_4.mp4")
 
     # Initialize Tracker
     tracker = Tracker("models/best.pt")
+
+    # tracks is an object with these characteristics
+    # tracks
+    # └── "players" / "referees" / "ball"
+    #     └── [frame_num]  (list index)
+    #         └── {track_id: {"bbox": [...], ...}, ...}  (dict)
+    # tracks["ball"][frame_num][1] = {"bbox": bbox}
 
     tracks = tracker.get_object_tracks(
         video_frames, read_from_stub=True, stub_path="stubs/track_stubs.pkl"
@@ -19,6 +32,11 @@ def main():
     team_assigner = TeamAssigner()
     team_assigner.assign_team_color(video_frames[0],tracks['players'][0])
 
+    # tracks["players"] = [
+    #   {7: {"bbox": [10,20,50,100]}, 19: {"bbox": [60,25,95,105]}},  # frame 0
+    #   {},                                                           # frame 1 (no players detected)
+    #   {7: {"bbox": [12,22,52,102]}}                                  # frame 2
+    # ]
     for frame_num, player_track in enumerate(tracks["players"]):
         for player_id, track in player_track.items():
             team = team_assigner.get_player_team(video_frames[frame_num],track["bbox"], player_id)

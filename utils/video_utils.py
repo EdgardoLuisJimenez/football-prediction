@@ -1,8 +1,11 @@
 import cv2
+from numpy.typing import NDArray
+from cv2.typing import MatLike
+import numpy as np
 
-def read_videos(video_path):
+def read_videos(video_path: str) -> list[MatLike]:
     cap = cv2.VideoCapture(video_path)
-    frames = []
+    frames: list[MatLike] = []
     while True:
         ret, frame = cap.read()
         if not ret: # The video is ended?

@@ -22,9 +22,13 @@ class Tracker:
             detections_batch = self.model.predict(frames[i : i + batch_size], conf=0.1)
             detections += detections_batch
 
-        # Detections objects have the following Attributes:
-        # names - dict - A dictionary mapping class indices to class names
-        # boxes - Boxes, optional - A boxes object containing the detection bounding boxes
+        # detections is a list of this 
+        # detections  =  [ result_for_frame0, result_for_frame1, result_for_frame2, ... ]
+        # each Detections objects have the following Attributes:
+        # names - dict - A dictionary mapping class indices to class names {0: 'player', 1: 'referee', ...}
+        # boxes - Boxes, optional - tensor - A boxes object containing the detection bounding boxes - array of [x1,y1,x2,y2] for each detection
+        # cls - class id for each detection - tensor([1., 1., 2.])   # class ids (player, player, referee)
+        # conf - confidence for each detection - tensor([0.93, 0.88, 0.79])  # confidence scores
         return detections
 
     def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
@@ -64,7 +68,7 @@ class Tracker:
             # detection_with_tracks is an sv.Detections  object
             # iterating over it yields one detection at a time
             for frame_detection in detection_with_tracks:
-                bbox = frame_detection[0].tolist() # Store pixel coordinates of the object in the frame [x1, x2, y1, y2]
+                bbox = frame_detection[0].tolist() # Store pixel coordinates of the object in the frame [x1, y1, x2, y2]
                 cls_id = frame_detection[3]
                 track_id = frame_detection[4]
 
