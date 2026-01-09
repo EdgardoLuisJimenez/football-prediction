@@ -265,6 +265,7 @@ pyrightconfig.json
 *.vob
 *.wmv
 *.webm
+*.pkl
 
 # End of https://www.toptal.com/developers/gitignore/api/video,python,text,images
 .DS_Store
@@ -276,3 +277,5 @@ env/
 # Archivos compilados de Python
 __pycache__/
 *.pyc
+
+!requirements.txt
