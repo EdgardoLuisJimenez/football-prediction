@@ -2,9 +2,12 @@ from utils import read_videos, save_video
 import cv2
 from team_assigner import TeamAssigner
 from tracker import Tracker
+import torch
 
 
 def main():
+    print("CUDA disponible:", torch.cuda.is_available())
+    print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU")
     # read videos
     # video_frames
     # │
@@ -15,7 +18,7 @@ def main():
     video_frames = read_videos("input_videos/08fd33_4_.mp4")
 
     # Initialize Tracker
-    tracker = Tracker("models/best.pt")
+    tracker = Tracker("models/best.pt", device=0)
 
     # tracks is an object with these characteristics
     # tracks

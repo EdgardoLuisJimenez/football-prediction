@@ -6,12 +6,17 @@ import os
 import os
 import numpy as np
 import sys
+import torch
 sys.path.append("../")
 from utils import get_center_of_bbox, get_bbox_width
 
 
 class Tracker:
-    def __init__(self, model_path):
+    def __init__(self, model_path, device=None):
+        if device is None:
+            device = 0 if torch.cuda.is_available() else "cpu"
+
+        self.device = device
         self.model = YOLO(model_path)
         self.tracker = sv.ByteTrack()
 
@@ -19,7 +24,7 @@ class Tracker:
         batch_size = 20
         detections = []
         for i in range(0, len(frames), batch_size):
-            detections_batch = self.model.predict(frames[i : i + batch_size], conf=0.1)
+            detections_batch = self.model.predict(frames[i : i + batch_size], conf=0.1, device=self.device)
             detections += detections_batch
 
         # detections is a list of this 
